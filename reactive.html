@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>반응형 메뉴</title>
+<style>
+  :root { --main: #3b6ef5; --main-d: #2a55cc; --bg: #f5f7fb; --ink: #1f2430; --card: #fff; --line: #e3e7ef; --h: 60px; }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--h) + 8px); }
+  body { margin: 0; font-family: "Malgun Gothic", sans-serif; background: var(--bg); color: var(--ink); line-height: 1.7; }
+  a { color: inherit; text-decoration: none; }
+
+  /* 헤더 */
+  header { position: sticky; top: 0; z-index: 50; height: var(--h); background: #fff; border-bottom: 1px solid var(--line); }
+  .bar { max-width: 1040px; height: 100%; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-weight: bold; font-size: 1.2rem; color: var(--main); }
+
+  /* PC 메뉴 */
+  .menu { list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; }
+  .menu a { display: block; padding: 8px 16px; border-radius: 999px; font-weight: bold; color: #555; }
+  .menu a:hover { background: #eef2ff; color: var(--main); }
+  .menu a.active { background: var(--main); color: #fff; }
+
+  /* 햄버거 버튼 (PC에서는 숨김) */
+  .burger { display: none; width: 44px; height: 44px; padding: 0; border: none; background: none; cursor: pointer; border-radius: 10px; position: relative; }
+  .burger:hover { background: #eef2ff; }
+  .burger span { position: absolute; left: 11px; right: 11px; height: 3px; background: var(--ink); border-radius: 2px; transition: transform .25s, opacity .2s, top .25s; }
+  .burger span:nth-child(1) { top: 14px; }
+  .burger span:nth-child(2) { top: 20px; }
+  .burger span:nth-child(3) { top: 26px; }
+  .burger[aria-expanded="true"] span:nth-child(1) { top: 20px; transform: rotate(45deg); }
+  .burger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+  .burger[aria-expanded="true"] span:nth-child(3) { top: 20px; transform: rotate(-45deg); }
+
+  /* 내용 */
+  main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; display: flex; flex-direction: column; gap: 20px; }
+  .hero { background: linear-gradient(135deg, var(--main), #7aa2ff); color: #fff; border-radius: 18px; padding: 36px 24px; text-align: center; }
+  .hero h1 { margin: 0 0 6px; font-size: 1.8rem; }
+  .hero p { margin: 0; opacity: .95; }
+  section { background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.06); }
+  section h2 { margin: 0 0 4px; font-size: 1.4rem; }
+  .lead { margin: 0 0 16px; color: #667; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 14px; background: #fafbff; }
+  .card h3 { margin: 0 0 4px; font-size: 1.05rem; }
+  .card p { margin: 0; font-size: .92rem; color: #556; }
+  .map { height: 260px; border-radius: 12px; background: repeating-linear-gradient(45deg, #e9eefc, #e9eefc 12px, #f3f6ff 12px, #f3f6ff 24px); display: grid; place-items: center; color: #556; font-weight: bold; }
+  .note { font-size: .8rem; color: #889; margin: 12px 0 0; }
+  footer { text-align: center; color: #889; font-size: .85rem; padding: 20px 16px 32px; }
+
+  /* 모바일: 햄버거 + 펼침 메뉴 */
+  @media (max-width: 768px) {
+    .burger { display: block; }
+    .menu { position: absolute; top: var(--h); left: 0; right: 0; flex-direction: column; gap: 0; background: #fff; border-bottom: 1px solid var(--line); box-shadow: 0 8px 16px rgba(0,0,0,.08); padding: 6px 12px 12px; max-height: 0; overflow: hidden; visibility: hidden; opacity: 0; transition: max-height .3s ease, opacity .2s, visibility 0s .3s; }
+    .menu.open { max-height: 80vh; visibility: visible; opacity: 1; transition: max-height .3s ease, opacity .2s; }
+    .menu a { padding: 14px 12px; border-radius: 10px; }
+    .hero { padding: 28px 16px; }
+    .hero h1 { font-size: 1.4rem; }
+    section { padding: 18px 16px; }
+    .map { height: 200px; }
+  }
+  .scrim { display: none; }
+  @media (max-width: 768px) {
+    .scrim.on { display: block; position: fixed; inset: var(--h) 0 0 0; background: rgba(0,0,0,.25); z-index: 40; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bar">
+    <a class="logo" href="#top">🧭 라이프 가이드</a>
+
+    <button class="burger" id="burger" aria-label="메뉴 열기" aria-expanded="false" aria-controls="menu">
+      <span></span><span></span><span></span>
+    </button>
+
+    <ul class="menu" id="menu">
+      <!-- 메뉴 항목은 여기서 추가/수정하세요 -->
+      <li><a href="#food">🍜 음식</a></li>
+      <li><a href="#furniture">🛋️ 가구</a></li>
+      <li><a href="#estate">🏠 부동산</a></li>
+      <li><a href="#stock">📈 주식</a></li>
+      <li><a href="#map">🗺️ 지도</a></li>
+    </ul>
+  </div>
+</header>
+<div class="scrim" id="scrim"></div>
+
+<main id="top">
+  <div class="hero">
+    <h1>무엇을 찾고 계세요?</h1>
+    <p>PC에서는 위쪽 메뉴, 모바일에서는 ☰ 버튼으로 이동해요.</p>
+  </div>
+
+  <section id="food">
+    <h2>🍜 음식</h2>
+    <p class="lead">맛집과 레시피, 지역 특산물을 모아 봐요.</p>
+    <div class="cards">
+      <div class="card"><h3>맛집</h3><p>동네 맛집과 후기를 살펴보세요.</p></div>
+      <div class="card"><h3>레시피</h3><p>집에서 쉽게 따라 하는 요리.</p></div>
+      <div class="card"><h3>특산물</h3><p>제철 재료와 지역 먹거리.</p></div>
+    </div>
+  </section>
+
+  <section id="furniture">
+    <h2>🛋️ 가구</h2>
+    <p class="lead">집을 꾸미는 인테리어와 가구 정보를 모아 봐요.</p>
+    <div class="cards">
+      <div class="card"><h3>인테리어</h3><p>방 분위기별 꾸미기 아이디어.</p></div>
+      <div class="card"><h3>가구 비교</h3><p>침대, 소파, 책상 한눈에 비교.</p></div>
+      <div class="card"><h3>배치 팁</h3><p>좁은 방도 넓게 쓰는 배치법.</p></div>
+    </div>
+  </section>
+
+  <section id="estate">
+    <h2>🏠 부동산</h2>
+    <p class="lead">집 구하기와 계약에 필요한 정보를 정리해 봐요.</p>
+    <div class="cards">
+      <div class="card"><h3>매물</h3><p>지역별 매물 정보 확인.</p></div>
+      <div class="card"><h3>계약 체크</h3><p>계약 전에 확인할 목록.</p></div>
+      <div class="card"><h3>용어 사전</h3><p>전세, 월세, 보증금 용어 설명.</p></div>
+    </div>
+  </section>
+
+  <section id="stock">
+    <h2>📈 주식</h2>
+    <p class="lead">시장 소식과 관심 종목을 정리해 봐요.</p>
+    <div class="cards">
+      <div class="card"><h3>시장 소식</h3><p>오늘의 주요 뉴스.</p></div>
+      <div class="card"><h3>관심 종목</h3><p>보고 싶은 종목 모아 보기.</p></div>
+      <div class="card"><h3>용어 사전</h3><p>처음 보는 투자 용어 설명.</p></div>
+    </div>
+    <p class="note">※ 투자 판단과 결과에 대한 책임은 본인에게 있어요. 이 화면은 정보 정리용이에요.</p>
+  </section>
+
+  <section id="map">
+    <h2>🗺️ 지도</h2>
+    <p class="lead">장소를 찾고 길을 확인해요.</p>
+    <div class="map">지도가 들어갈 자리예요</div>
+  </section>
+</main>
+
+<footer>© 2026 라이프 가이드</footer>
+
+<script>
+  const burger = document.getElementById('burger');
+  const menu = document.getElementById('menu');
+  const scrim = document.getElementById('scrim');
+
+  function setOpen(open) {
+    menu.classList.toggle('open', open);
+    scrim.classList.toggle('on', open);
+    burger.setAttribute('aria-expanded', open);
+    burger.setAttribute('aria-label', open ? '메뉴 닫기' : '메뉴 열기');
+  }
+
+  burger.onclick = () => setOpen(!menu.classList.contains('open'));
+  scrim.onclick = () => setOpen(false);
+  menu.addEventListener('click', e => { if (e.target.closest('a')) setOpen(false); });   // 항목 선택 시 닫기
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
+  // 화면이 넓어져 PC 메뉴로 바뀌면 열린 상태를 정리
+  matchMedia('(min-width: 769px)').addEventListener('change', e => { if (e.matches) setOpen(false); });
+
+  // 지금 보고 있는 섹션의 메뉴를 강조
+  const links = [...menu.querySelectorAll('a')];
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting) links.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + en.target.id));
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  links.forEach(a => { const s = document.querySelector(a.getAttribute('href')); if (s) io.observe(s); });
+</script>
+</body>
+</html>
