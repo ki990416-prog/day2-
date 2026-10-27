@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <p class="greet">안녕하세요</p>
+    <h1 class="greet">
+        반갑습니다
+    </h1>
+    <h2 class="greet">
+        반갑습니다
+    </h2>
+    <button id="swap">변경</button>
+
+    <!-- script 는 button 이 만들어진 뒤(body 맨 아래)에 있어야 button 을 찾을 수 있음 -->
+    <script>
+        const button = document.getElementById('swap');
+        const greets = document.querySelectorAll('.greet');
+
+        button.addEventListener('click', () => {
+            // 누를 때마다 안녕하세요 <-> 반갑습니다 로 서로 바꿈
+            greets.forEach(el => {
+                const now = el.textContent.trim();
+                el.textContent = now === '안녕하세요' ? '반갑습니다' : '안녕하세요';
+            });
+        });
+    </script>
+</body>
+</html>

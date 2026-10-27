@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function plus(a,b){
+            return a+b
+        }
+        function minus(a,b){
+            return a-b
+        }
+        function mul(a,b){
+            return a*b
+        }
+        function div(a,b){
+            return a/b
+        }
+        function mod(a,b){
+            return a%b
+        }
+        
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#plus').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' + ' + b + ' = ' + plus(a, b);
+            });
+        });
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#minus').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' - ' + b + ' = ' + minus(a, b);
+            });
+        });
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#mul').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' * ' + b + ' = ' + mul(a, b);
+            });
+        });
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#minus').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' - ' + b + ' = ' + minus(a, b);
+            });
+        });
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#div').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' / ' + b + ' = ' + div(a, b);
+            });
+        });
+        // head 안에서는 body가 아직 없으므로, 문서가 다 읽힌 뒤에 버튼에 이벤트를 연결한다.
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('button#mod').addEventListener('click', function () {
+                // input 의 value 는 글자(문자열)라서, 더하기 전에 Number() 로 숫자로 바꾼다.
+                // (바꾸지 않으면 "4" + "6" 이 10 이 아니라 "46" 이 된다.)
+                const a = Number(document.querySelector('#a').value);
+                const b = Number(document.querySelector('#b').value);
+                document.querySelector('#result').textContent = a + ' % ' + b + ' = ' + div(a, b);
+            });
+        });
+    
+    </script>
+</head>
+<body>
+    안녕하세요
+    <h1>
+        반갑습니다
+    </h1>
+    <h2>
+        반갑습니다
+    </h2>
+    <input type="number" id="a" placeholder="첫 번째 숫자">
+    <input type="number" id="b" placeholder="두 번째 숫자">
+    <button id="plus">  덧셈</button>
+    <button id="minus"> 뺄셈</button>
+    <button id="mul">  곱셈</button>
+    <button id="div">  나눗셈</button>
+    <button id="mod">  나머지</button>
+    <p id="result"></p>
+</body>
+</html>
