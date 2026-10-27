@@ -85,6 +85,23 @@
   .g-pager.on { display: flex; }
   .g-credit { text-align: center; font-size: .78rem; color: #999; margin: 12px 0 0; }
 
+  /* 채팅 에이전트 */
+  #agent { margin: 0 auto 28px; background: var(--card); border-radius: 16px; padding: 24px; box-shadow: 0 2px 10px rgba(0,0,0,.07); }
+  #agent h2 { color: var(--sea); }
+  .c-chat { height: 340px; overflow-y: auto; padding: 12px; background: var(--bg); border-radius: 12px; display: flex; flex-direction: column; gap: 10px; }
+  .c-row { display: flex; }
+  .c-row.me { justify-content: flex-end; }
+  .c-row.bot { justify-content: flex-start; }
+  .c-bubble { max-width: 75%; padding: 10px 14px; border-radius: 18px; line-height: 1.5; white-space: pre-wrap; word-break: break-word; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  .c-row.me .c-bubble { background: var(--orange); color: #fff; border-bottom-right-radius: 4px; }
+  .c-row.bot .c-bubble { background: #fff; color: var(--ink); border-bottom-left-radius: 4px; }
+  .c-form { display: flex; gap: 8px; margin-top: 10px; }
+  .c-form input { flex: 1; min-width: 0; padding: 11px 14px; font-size: 1rem; border: 1px solid #ddd; border-radius: 999px; outline: none; }
+  .c-form input:focus { border-color: var(--orange); }
+  .c-form button { padding: 0 20px; font-size: 1rem; font-weight: bold; border: none; border-radius: 999px; background: var(--orange); color: #fff; cursor: pointer; }
+  .c-form button:hover { background: var(--orange-d); }
+  .c-note { text-align: center; font-size: .72rem; color: #999; margin: 8px 0 0; }
+
   @media (max-width: 800px) {
     .layout { grid-template-columns: 1fr; grid-template-areas: "sec" "art" "aside"; }
     header h1 { font-size: 1.8rem; }
@@ -104,6 +121,7 @@
     <li><a href="#citrus">감귤류</a></li>
     <li><a href="#seafood">먹거리</a></li>
     <li><a href="#gallery">사진 갤러리</a></li>
+    <li><a href="#agent">에이전트 채팅</a></li>
     <li><a href="#season">제철 달력</a></li>
     <li><a href="#contact">구매·문의</a></li>
   </ul>
@@ -196,6 +214,17 @@
     </div>
     <p class="g-credit">이미지 제공: <a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a></p>
   </section>
+
+  <section id="agent">
+    <h2>💬 제주 특산물 에이전트</h2>
+    <p class="lead">제주도 특산물에 대해 물어보세요. (지금은 미리 정해 둔 답을 해요)</p>
+    <div class="c-chat" id="cchat" aria-live="polite"></div>
+    <form class="c-form" id="cform" autocomplete="off">
+      <input id="cmsg" type="text" placeholder="메시지를 입력하세요" aria-label="메시지 입력">
+      <button type="submit">보내기</button>
+    </form>
+    <p class="c-note">※ 지금 답변은 미리 정해 둔 가짜 답이에요. 진짜 답은 5일차에 연결됩니다.</p>
+  </section>
 </div>
 
 <footer>
@@ -254,6 +283,39 @@
     $('gq').onkeydown = e => { if (e.key === 'Enter') load(1); };
     $('gpagePrev').onclick = () => load(page - 1);
     $('gpageNext').onclick = () => load(page + 1);
+  })();
+
+  // 채팅 에이전트: 가짜 답 3개를 차례로 돌려 씁니다.
+  (() => {
+    const REPLIES = [
+      '안녕하세요! 저는 제주도 특산물을 알려 드리는 에이전트예요 🍊\n감귤, 한라봉, 흑돼지, 갈치 중에 어떤 게 가장 궁금하세요?',
+      '그럼 추천 하나 드릴게요! 지금 같은 늦가을~겨울에는 노지감귤이 제철이에요 🍊\n새콤달콤해서 간식으로 딱 좋아요.',
+      '아직 공부 중이에요! 5일차에 진짜로 알아볼게요.'
+    ];
+    let turn = 0;
+    const chat = document.getElementById('cchat');
+    const input = document.getElementById('cmsg');
+
+    function add(who, text) {
+      const row = document.createElement('div');
+      row.className = 'c-row ' + who;
+      const b = document.createElement('div');
+      b.className = 'c-bubble';
+      b.textContent = text;            // 입력한 글이 HTML로 해석되지 않게 textContent 사용
+      row.appendChild(b);
+      chat.appendChild(row);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    document.getElementById('cform').addEventListener('submit', e => {
+      e.preventDefault();               // 보내기 버튼과 Enter 모두 여기로 들어옴
+      const text = input.value.trim();
+      if (!text) return;
+      add('me', text);
+      input.value = '';
+      const reply = REPLIES[turn++ % REPLIES.length];
+      setTimeout(() => add('bot', reply), 1000);
+    });
   })();
 </script>
 
