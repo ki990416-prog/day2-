@@ -102,9 +102,53 @@
   .c-form button:hover { background: var(--orange-d); }
   .c-note { text-align: center; font-size: .72rem; color: #999; margin: 8px 0 0; }
 
+  /* ===== 반응형: PC · 태블릿 · 모바일 ===== */
+  /* 고정 메뉴에 가려지지 않게 앵커 이동 위치 보정 */
+  #top-intro, #citrus, #seafood, #gallery, #agent, #season, #contact { scroll-margin-top: 64px; }
+  img { max-width: 100%; }
+
+  /* 터치 기기(hover 없음)에서는 카드가 떠오르는 효과를 끔 */
+  @media (hover: none) {
+    .item:hover { transform: none; box-shadow: none; }
+  }
+
+  /* 태블릿: 오른쪽 칸을 조금 좁게 */
+  @media (max-width: 1000px) {
+    .layout { grid-template-columns: 1fr 260px; }
+  }
+
+  /* 작은 태블릿 · 큰 폰: 한 줄 배치, aside 는 2열 */
   @media (max-width: 800px) {
     .layout { grid-template-columns: 1fr; grid-template-areas: "sec" "art" "aside"; }
     header h1 { font-size: 1.8rem; }
+    aside { display: grid; grid-template-columns: 1fr 1fr; align-items: start; }
+    aside .cta { grid-column: 1 / -1; }
+  }
+
+  /* 모바일 */
+  @media (max-width: 560px) {
+    header { padding: 32px 16px 26px; }
+    header h1 { font-size: 1.5rem; }
+    header p { font-size: .95rem; }
+    nav ul { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; padding: 0 8px; }
+    nav ul::-webkit-scrollbar { display: none; }
+    nav li { flex: 0 0 auto; }
+    nav a { padding: 13px 12px; white-space: nowrap; font-size: .92rem; }
+    .layout { margin: 16px auto; gap: 14px; }
+    section, article, aside > div, #gallery, #agent { padding: 16px; border-radius: 14px; }
+    aside { grid-template-columns: 1fr; gap: 14px; }
+    h2 { font-size: 1.25rem; }
+    .grid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .item { padding: 12px; }
+    .g-form input, .c-form input { font-size: 16px; }   /* iOS 자동 확대 방지 */
+    .g-form button, .g-pager button { padding: 10px 14px; }
+    .g-slider { aspect-ratio: 4 / 3; }
+    .g-arrow { width: 38px; height: 38px; font-size: 1.2rem; }
+    .g-prev { left: 6px; } .g-next { right: 6px; }
+    .g-pager { flex-wrap: wrap; }
+    .c-chat { height: 300px; }
+    .c-bubble { max-width: 85%; }
+    footer { padding: 22px 16px; font-size: .85rem; }
   }
 </style>
 </head>
@@ -117,13 +161,13 @@
 
 <nav>
   <ul>
-    <li><a href="file:///C:/vibe/day2/index(2).html#top-intro">소개</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#citrus">감귤류</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#seafood">먹거리</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#gallery">사진 갤러리</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#agent">에이전트 채팅</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#season">제철 달력</a></li>
-    <li><a href="file:///C:/vibe/day2/index(2).html#contact">구매·문의</a></li>
+    <li><a href="#top-intro">소개</a></li>
+    <li><a href="#citrus">감귤류</a></li>
+    <li><a href="#seafood">먹거리</a></li>
+    <li><a href="#gallery">사진 갤러리</a></li>
+    <li><a href="#agent">에이전트 채팅</a></li>
+    <li><a href="#season">제철 달력</a></li>
+    <li><a href="#contact">구매·문의</a></li>
   </ul>
 </nav>
 
@@ -185,7 +229,7 @@
     <div class="cta" id="contact">
       <h2>🎁 선물하기 좋아요</h2>
       <p>제주의 맛을 소중한 분께 전해 보세요.</p>
-      <a href="file:///C:/vibe/day2/index(2).html#top-intro">특산물 둘러보기</a>
+      <a href="#top-intro">특산물 둘러보기</a>
     </div>
   </aside>
 
@@ -278,6 +322,15 @@
     const move = d => { idx = (idx + d + hits.length) % hits.length; show(); };
     $('gprev').onclick = () => move(-1);
     $('gnext').onclick = () => move(1);
+    // 모바일: 좌우로 밀어서 넘기기
+    let sx = null;
+    $('gslider').addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, { passive: true });
+    $('gslider').addEventListener('touchend', e => {
+      if (sx === null || !hits.length) return;
+      const dx = e.changedTouches[0].clientX - sx;
+      if (Math.abs(dx) > 40) move(dx < 0 ? 1 : -1);
+      sx = null;
+    });
     $('gdots').onclick = e => { if (e.target.dataset.i) { idx = +e.target.dataset.i; show(); } };
     $('ggo').onclick = () => load(1);
     $('gq').onkeydown = e => { if (e.key === 'Enter') load(1); };
